@@ -35,7 +35,7 @@ namespace VasciiLib.Video {
 		///</summary>
 		public void Play(Action<string> draw, CancellationToken cancellationToken) {
 			Stopwatch timer = new();
-			int frameTime = (int)(1000 / Fps);
+			int frameTime = (int)Math.Floor(1000 / Fps / 1.1);
 
 			_playThread = new Thread(_ => {
 				Started?.Invoke(this, new VasciiVideoEventArgs());
@@ -43,7 +43,6 @@ namespace VasciiLib.Video {
 
 				for (int i = 0; i < Frames.Count; i++) {
 					timer.Restart();
-
 					if (cancellationToken.IsCancellationRequested) {
 						break;
 					}
@@ -52,7 +51,7 @@ namespace VasciiLib.Video {
 					Task.Run(() => draw(Frames[i])).Wait();
 
 					// To make sure we hit the desired FPS
-					Thread.Sleep(Math.Clamp((int)((frameTime - timer.ElapsedMilliseconds) / 1.1), 0, int.MaxValue));
+					Thread.Sleep(Math.Clamp((int)(frameTime - timer.ElapsedMilliseconds), 0, int.MaxValue));
 				}
 
 				Finished?.Invoke(this, new VasciiVideoEventArgs());

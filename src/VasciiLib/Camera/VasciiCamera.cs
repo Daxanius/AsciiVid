@@ -9,14 +9,9 @@ namespace VasciiLib.Camera {
 		private Thread _cameraThread;
 
 		public VideoCapture Capture { get; private set; }
-		public int Width { get; private set; }
-		public int Height { get; private set; }
 
-		public VasciiCamera(VasciiManager vasciiManager, int width, int height) {
+		public VasciiCamera(VasciiManager vasciiManager) {
 			_vasciiManager = vasciiManager;
-
-			Width = width;
-			Height = height;
 		}
 
 		///<summary>
@@ -32,7 +27,7 @@ namespace VasciiLib.Camera {
 				while (Capture.IsOpened()) {
 					Capture.Read(frame);
 
-					Mat frameResized = frame.Resize(new Size(Width, Height));
+					Mat frameResized = frame.Resize(new Size(_vasciiManager.Width, _vasciiManager.Height));
 					string asciiFrame = _vasciiManager.GenerateAscii(frameResized);
 
 					Task.Run(() => draw(asciiFrame));
