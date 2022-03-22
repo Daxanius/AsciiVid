@@ -38,8 +38,10 @@ namespace Vascii {
 
 		static void PlayVideo(string videoFile, int width, int height) {
 			Stopwatch stopwatch = new();
-
 			VasciiManager manager = new();
+
+			int positionTop = Console.WindowTop;
+			int positionLeft = Console.WindowLeft;
 
 			// Because we're writing white text on a black background
 			manager.InvertColors();
@@ -51,12 +53,9 @@ namespace Vascii {
 
 			video.Finished += (_, _) => {
 				stopwatch.Stop();
-
+				Console.SetCursorPosition(positionTop, positionLeft);
 				Console.WriteLine($"Finished playing, took {stopwatch.Elapsed}");
 			};
-
-			int positionTop = Console.WindowTop;
-			int positionLeft = Console.WindowLeft;
 
 			Console.Write($"Press any key to start playing > ");
 			Console.Read();

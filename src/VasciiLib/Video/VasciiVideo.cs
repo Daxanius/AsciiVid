@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace VasciiLib.Video {
 	public class VasciiVideo {
@@ -53,7 +52,7 @@ namespace VasciiLib.Video {
 					Task.Run(() => draw(Frames[i])).Wait();
 
 					// To make sure we hit the desired FPS
-					Thread.Sleep((int)((frameTime - timer.ElapsedMilliseconds) / 1.1));
+					Thread.Sleep(Math.Clamp((int)((frameTime - timer.ElapsedMilliseconds) / 1.1), 0, int.MaxValue));
 				}
 
 				Finished?.Invoke(this, new VasciiVideoEventArgs());
