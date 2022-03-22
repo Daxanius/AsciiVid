@@ -53,6 +53,7 @@ namespace Vascii {
 
 			video.Finished += (_, _) => {
 				stopwatch.Stop();
+				Console.Clear();
 				Console.SetCursorPosition(positionTop, positionLeft);
 				Console.WriteLine($"Finished playing, took {stopwatch.Elapsed}");
 			};
