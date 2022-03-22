@@ -24,7 +24,7 @@ namespace Vascii {
 		}
 
 		static void PlayCamera(int width, int height, int camera) {
-			VasciiManager vasciiManager = new VasciiManager();
+			VasciiManager vasciiManager = new();
 			vasciiManager.InvertColors();
 
 			VasciiCamera capture = new(vasciiManager, width, height);
