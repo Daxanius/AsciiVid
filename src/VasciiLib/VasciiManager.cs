@@ -61,7 +61,8 @@ namespace VasciiLib {
 				throw new VasciiLibException("VasciiManager-GenerateVasciiImage(): file does not exist");
 			}
 
-			return GenerateAscii(new(imageFile));
+			Mat image = new Mat(imageFile).Resize(new Size(Width, Height));
+			return GenerateAscii(image);
 		}
 
 		///<summary>
