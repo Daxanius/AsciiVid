@@ -23,7 +23,7 @@ namespace Vascii {
 				h.Heading = "Vascii";
 				h.Copyright = String.Empty;
 				h.AddPreOptionsLine("usage: vascii [options]");
-				h.AddPreOptionsLine("\nMain Options:");
+				h.AddPreOptionsLine("\nMain options:");
 				return h;
 			});
 			Console.WriteLine(helpText);
@@ -35,10 +35,11 @@ namespace Vascii {
 					PlayVideo(options);
 					break;
 				case VasciiMode.Camera:
-					PlayCamera(options);
+					StartCamera(options);
 					break;
 				case VasciiMode.Image:
-					throw new NotImplementedException();
+					RenderImage(options);
+					break;
 			}
 		}
 
@@ -56,7 +57,24 @@ namespace Vascii {
 			return vasciiManager;
 		}
 
-		static void PlayCamera(Options options) {
+		static void RenderImage(Options options) {
+			if (String.IsNullOrWhiteSpace(options.file) || !File.Exists(options.file)) {
+				Console.WriteLine("Please provide a valid image file, specify a file with --file=<file>");
+				return;
+			}
+
+			var vasciiManager = GetVasciiManager(options);
+			string image = vasciiManager.GenerateVasciiImage(options.file);
+
+			if (!options.SkipPrompt) {
+				Console.Write($"Press any key to display image > ");
+				Console.Read();
+			}
+
+			Console.WriteLine(image);
+		}
+
+		static void StartCamera(Options options) {
 			VasciiCamera camera = new(GetVasciiManager(options));
 			camera.TargetFps = options.Fps;
 
@@ -73,19 +91,16 @@ namespace Vascii {
 		}
 
 		static void PlayVideo(Options options) {
-			if (String.IsNullOrWhiteSpace(options.Video) || !File.Exists(options.Video)) {
+			if (String.IsNullOrWhiteSpace(options.file) || !File.Exists(options.file)) {
 				Console.WriteLine("Please provide a valid video file, specify a file with --file=<file>");
 				return;
 			}
 
 			Stopwatch stopwatch = new();
 
-			int positionTop = Console.WindowTop;
-			int positionLeft = Console.WindowLeft;
-
 			// Because we're writing white text on a black background
 			var manager = GetVasciiManager(options);
-			var video = manager.GenerateVasciiVideo(options.Video);
+			var video = manager.GenerateVasciiVideo(options.file);
 
 			video.Started += (_, _) => {
 				stopwatch.Restart();
@@ -93,8 +108,8 @@ namespace Vascii {
 
 			video.Finished += (_, _) => {
 				stopwatch.Stop();
-				Console.Clear();
-				Console.SetCursorPosition(positionTop, positionLeft);
+				Console.Clear(); 
+				Console.SetCursorPosition(Console.WindowTop, Console.WindowLeft);
 				Console.WriteLine($"Finished playing, took {stopwatch.Elapsed}");
 			};
 
@@ -112,7 +127,7 @@ namespace Vascii {
 
 			Console.Clear();
 			video.Play(cancellationToken: CancellationToken.None, draw: frame => {
-				Console.SetCursorPosition(positionTop, positionLeft);
+				Console.SetCursorPosition(Console.WindowTop, Console.WindowLeft);
 				Console.WriteLine(frame);
 			});
 		}

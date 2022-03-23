@@ -54,6 +54,17 @@ namespace VasciiLib {
 		}
 
 		///<summary>
+		///<para>Generates an ASCII image</para>
+		///</summary>
+		public string GenerateVasciiImage(string imageFile) {
+			if (!File.Exists(imageFile)) {
+				throw new VasciiLibException("VasciiManager-GenerateVasciiImage(): file does not exist");
+			}
+
+			return GenerateAscii(new(imageFile));
+		}
+
+		///<summary>
 		///<para>Converts a Mat to a string</para>
 		///</summary>
 		public string GenerateAscii(Mat image) {

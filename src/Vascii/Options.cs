@@ -30,7 +30,7 @@ namespace Vascii {
 		public int Fps { get; set; }
 
 		[Option("file", Required = false, HelpText = "The file to use.")]
-		public string Video { get; set; }
+		public string file { get; set; }
 
 		[Option("mode", Default = VasciiMode.Video, Required = false, HelpText = "The mode to run the program in.")]
 		public VasciiMode Mode { get; set; }
