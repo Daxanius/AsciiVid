@@ -21,6 +21,9 @@ namespace Vascii {
 			var helpText = HelpText.AutoBuild(result, h => {
 				h.AdditionalNewLineAfterOption = false;
 				h.Heading = "Vascii";
+				h.Copyright = String.Empty;
+				h.AddPreOptionsLine("usage: vascii [options]");
+				h.AddPreOptionsLine("\nMain Options:");
 				return h;
 			});
 			Console.WriteLine(helpText);
@@ -48,17 +51,22 @@ namespace Vascii {
 			VasciiManager vasciiManager = new(width, height);
 
 			if (options.Invert) vasciiManager.InvertColors();
-			if (!String.IsNullOrWhiteSpace(options.DensityChars)) vasciiManager.DensityChars = options.DensityChars;
+			if (!String.IsNullOrWhiteSpace(options.Characters)) vasciiManager.Characters = options.Characters;
 
 			return vasciiManager;
 		}
 
 		static void PlayCamera(Options options) {
-			VasciiCamera capture = new(GetVasciiManager(options));
-			capture.TargetFps = options.Fps;
+			VasciiCamera camera = new(GetVasciiManager(options));
+			camera.TargetFps = options.Fps;
+
+			if (!options.SkipPrompt) {
+				Console.Write($"Press any key to start camera > ");
+				Console.Read();
+			}
 
 			Console.Clear();
-			capture.StartCapture(options.Camera, draw: frame => {
+			camera.StartCapture(options.Camera, draw: frame => {
 				Console.SetCursorPosition(Console.WindowTop, Console.WindowLeft);
 				Console.WriteLine(frame);
 			});
@@ -66,7 +74,7 @@ namespace Vascii {
 
 		static void PlayVideo(Options options) {
 			if (String.IsNullOrWhiteSpace(options.Video) || !File.Exists(options.Video)) {
-				Console.WriteLine("Please provide a valid video file, specify a file with -f <file>");
+				Console.WriteLine("Please provide a valid video file, specify a file with --file=<file>");
 				return;
 			}
 
@@ -97,8 +105,10 @@ namespace Vascii {
 				video.Fps = options.Fps;
 			}
 
-			Console.Write($"Press any key to start playing > ");
-			Console.Read();
+			if (!options.SkipPrompt) {
+				Console.Write($"Press any key to start playing > ");
+				Console.Read();
+			}
 
 			Console.Clear();
 			video.Play(cancellationToken: CancellationToken.None, draw: frame => {

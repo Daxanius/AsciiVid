@@ -17,7 +17,7 @@ namespace VasciiLib {
 		public int Width { get; private set; }
 		public int Height { get; private set; }
 
-		public string DensityChars { get; set; } = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
+		public string Characters { get; set; } = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
 		public event EventHandler<EventArgs> Ready;
 
@@ -80,16 +80,16 @@ namespace VasciiLib {
 		///</summary>
 		public char GenerateChar(byte r, byte g, byte b) {
 			double avg = Enumerable.Average(new int[] { r, g, b });
-			return DensityChars[(int)(avg / 256 * 100 * DensityChars.Length / 100)];
+			return Characters[(int)(avg / 256 * 100 * Characters.Length / 100)];
 		}
 
 		///<summary>
 		///<para>Inverts the colors for a white on black background</para>
 		///</summary>
 		public void InvertColors() {
-			char[] array = DensityChars.ToCharArray();
+			char[] array = Characters.ToCharArray();
 			Array.Reverse(array);
-			DensityChars = new string(array);
+			Characters = new string(array);
 		}
 	}
 }

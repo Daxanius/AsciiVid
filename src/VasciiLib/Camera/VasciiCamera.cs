@@ -9,7 +9,7 @@ namespace VasciiLib.Camera {
 		private readonly VasciiManager _vasciiManager;
 		private Thread _cameraThread;
 
-		public VideoCapture Capture { get; private set; }
+		public VideoCapture Capture { get; private set; } = new();
 		public double TargetFps { get; set; }
 
 		public VasciiCamera(VasciiManager vasciiManager) {
@@ -21,12 +21,9 @@ namespace VasciiLib.Camera {
 		///</summary>
 		public void StartCapture(int camera, Action<string> draw) {
 			Stopwatch timer = new();
-
-			Capture = new(camera);
 			Capture.Open(camera);
 
 			if (TargetFps == 0) { TargetFps = Capture.Fps; }
-
 			int frameTime = (int)Math.Floor(1000 / TargetFps);
 			Mat frame = new();
 
