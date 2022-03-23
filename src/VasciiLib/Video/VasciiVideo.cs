@@ -18,8 +18,8 @@ namespace VasciiLib.Video {
 		public string Source { get; private set; }
 
 		// Events
-		public event EventHandler<VasciiVideoEventArgs> Started;
-		public event EventHandler<VasciiVideoEventArgs> Finished;
+		public event EventHandler<EventArgs> Started;
+		public event EventHandler<EventArgs> Finished;
 
 		///<summary>
 		///<para>General information about the video</para>
@@ -38,7 +38,7 @@ namespace VasciiLib.Video {
 			int frameTime = (int)Math.Floor(1000 / Fps / 1.1);
 
 			_playThread = new Thread(_ => {
-				Started?.Invoke(this, new VasciiVideoEventArgs());
+				Started?.Invoke(this, new EventArgs());
 				if (PlayAudio) { StreamManager.PlayAudioStream(Source, Volume); }
 
 				for (int i = 0; i < Frames.Count; i++) {
@@ -54,7 +54,7 @@ namespace VasciiLib.Video {
 					Thread.Sleep(Math.Clamp((int)(frameTime - timer.ElapsedMilliseconds), 0, int.MaxValue));
 				}
 
-				Finished?.Invoke(this, new VasciiVideoEventArgs());
+				Finished?.Invoke(this, new EventArgs());
 			});
 
 			_playThread.Start();
