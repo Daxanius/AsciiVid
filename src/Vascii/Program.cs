@@ -55,6 +55,7 @@ namespace Vascii {
 
 		static void PlayCamera(Options options) {
 			VasciiCamera capture = new(GetVasciiManager(options));
+			capture.TargetFps = options.Fps;
 
 			Console.Clear();
 			capture.StartCapture(options.Camera, draw: frame => {

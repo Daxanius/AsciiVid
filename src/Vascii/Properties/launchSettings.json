@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Vascii": {
+      "commandName": "Project",
+      "commandLineArgs": "--mode=camera -i --disable-audio --volume=0 --fps=15"
+    }
+  }
+}

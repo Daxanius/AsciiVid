@@ -1,6 +1,7 @@
 ﻿using OpenCvSharp;
 using System;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace VasciiLib.Camera {
@@ -9,6 +10,7 @@ namespace VasciiLib.Camera {
 		private Thread _cameraThread;
 
 		public VideoCapture Capture { get; private set; }
+		public double TargetFps { get; set; }
 
 		public VasciiCamera(VasciiManager vasciiManager) {
 			_vasciiManager = vasciiManager;
@@ -18,19 +20,29 @@ namespace VasciiLib.Camera {
 		///<para>Starts the camera capture</para>
 		///</summary>
 		public void StartCapture(int camera, Action<string> draw) {
+			Stopwatch timer = new();
+
 			Capture = new(camera);
 			Capture.Open(camera);
 
+			if (TargetFps == 0) { TargetFps = Capture.Fps; }
+
+			int frameTime = (int)Math.Floor(1000 / TargetFps);
 			Mat frame = new();
 
 			_cameraThread = new(_ => {
 				while (Capture.IsOpened()) {
+					timer.Restart();
 					Capture.Read(frame);
 
 					Mat frameResized = frame.Resize(new Size(_vasciiManager.Width, _vasciiManager.Height));
 					string asciiFrame = _vasciiManager.GenerateAscii(frameResized);
 
+					// Run the draw action
 					Task.Run(() => draw(asciiFrame));
+
+					// To make sure we hit the desired FPS
+					Thread.Sleep(Math.Clamp((int)(frameTime - timer.ElapsedMilliseconds), 0, int.MaxValue));
 				}
 			});
 
