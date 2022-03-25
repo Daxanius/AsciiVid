@@ -28,8 +28,8 @@ namespace VasciiLib.Camera {
 			Mat frame = new();
 
 			_cameraThread = new(() => {
+				timer.Restart();
 				while (Capture.IsOpened()) {
-					timer.Restart();
 					Capture.Read(frame);
 
 					Mat frameResized = frame.Resize(new Size(_vasciiManager.Width, _vasciiManager.Height));
@@ -40,6 +40,7 @@ namespace VasciiLib.Camera {
 
 					// To make sure we hit the desired FPS
 					Thread.Sleep(Math.Clamp((frameTime - (int)timer.ElapsedMilliseconds), 0, frameTime));
+					timer.Restart();
 				}
 			});
 

@@ -51,7 +51,7 @@ namespace VasciiLib.Video {
 					Task.Run(() => draw(Frames[i]));
 
 					// To make sure we hit the desired FPS
-					Thread.Sleep(Math.Clamp((frameTime - (int)timer.ElapsedMilliseconds), 0, frameTime));
+					Thread.Sleep(Math.Clamp(frameTime - (int)timer.ElapsedMilliseconds, 0, frameTime));
 					timer.Restart();
 				}
 
