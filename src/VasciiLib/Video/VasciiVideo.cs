@@ -35,23 +35,24 @@ namespace VasciiLib.Video {
 		///</summary>
 		public void Play(Action<string> draw, CancellationToken cancellationToken) {
 			Stopwatch timer = new();
-			int frameTime = (int)Math.Floor(1000 / Fps / 1.1);
+			int frameTime = (int)(1000 / Fps);
 
-			_playThread = new Thread(_ => {
+			_playThread = new Thread(() => {
 				Started?.Invoke(this, new EventArgs());
 				if (PlayAudio) { StreamManager.PlayAudioStream(Source, Volume); }
 
+				timer.Restart();
 				for (int i = 0; i < Frames.Count; i++) {
-					timer.Restart();
 					if (cancellationToken.IsCancellationRequested) {
 						break;
 					}
 
 					// Run the draw action
-					Task.Run(() => draw(Frames[i])).Wait();
+					Task.Run(() => draw(Frames[i]));
 
 					// To make sure we hit the desired FPS
-					Thread.Sleep(Math.Clamp((int)(frameTime - timer.ElapsedMilliseconds), 0, int.MaxValue));
+					Thread.Sleep(Math.Clamp((frameTime - (int)timer.ElapsedMilliseconds), 0, frameTime));
+					timer.Restart();
 				}
 
 				Finished?.Invoke(this, new EventArgs());

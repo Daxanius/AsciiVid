@@ -27,7 +27,7 @@ namespace VasciiLib.Camera {
 			int frameTime = (int)Math.Floor(1000 / TargetFps);
 			Mat frame = new();
 
-			_cameraThread = new(_ => {
+			_cameraThread = new(() => {
 				while (Capture.IsOpened()) {
 					timer.Restart();
 					Capture.Read(frame);
@@ -39,7 +39,7 @@ namespace VasciiLib.Camera {
 					Task.Run(() => draw(asciiFrame));
 
 					// To make sure we hit the desired FPS
-					Thread.Sleep(Math.Clamp((int)(frameTime - timer.ElapsedMilliseconds), 0, int.MaxValue));
+					Thread.Sleep(Math.Clamp((frameTime - (int)timer.ElapsedMilliseconds), 0, frameTime));
 				}
 			});
 
