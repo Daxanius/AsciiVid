@@ -58,13 +58,13 @@ namespace Vascii {
 		}
 
 		static void RenderImage(Options options) {
-			if (String.IsNullOrWhiteSpace(options.file) || !File.Exists(options.file)) {
+			if (String.IsNullOrWhiteSpace(options.File) || !File.Exists(options.File)) {
 				Console.WriteLine("Please provide a valid image file, specify a file with --file=<file>");
 				return;
 			}
 
 			var vasciiManager = GetVasciiManager(options);
-			string image = vasciiManager.GenerateVasciiImage(options.file);
+			string image = vasciiManager.GenerateVasciiImage(options.File);
 
 			if (!options.SkipPrompt) {
 				Console.Write($"Press any key to display image > ");
@@ -91,7 +91,7 @@ namespace Vascii {
 		}
 
 		static void PlayVideo(Options options) {
-			if (String.IsNullOrWhiteSpace(options.file) || !File.Exists(options.file)) {
+			if (String.IsNullOrWhiteSpace(options.File) || !File.Exists(options.File)) {
 				Console.WriteLine("Please provide a valid video file, specify a file with --file=<file>");
 				return;
 			}
@@ -100,7 +100,7 @@ namespace Vascii {
 
 			// Because we're writing white text on a black background
 			var manager = GetVasciiManager(options);
-			var video = manager.GenerateVasciiVideo(options.file);
+			var video = manager.GenerateVasciiVideo(options.File);
 
 			video.Started += (_, _) => {
 				stopwatch.Restart();

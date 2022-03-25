@@ -27,10 +27,10 @@ namespace Vascii {
 		public int Camera { get; set; }
 
 		[Option("fps", Required = false, HelpText = "Override the FPS.")]
-		public int Fps { get; set; }
+		public double Fps { get; set; }
 
 		[Option("file", Required = false, HelpText = "The file to use.")]
-		public string file { get; set; }
+		public string File { get; set; }
 
 		[Option("mode", Default = VasciiMode.Video, Required = false, HelpText = "The mode to run the program in.")]
 		public VasciiMode Mode { get; set; }
