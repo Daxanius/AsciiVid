@@ -20,6 +20,9 @@ namespace Vascii {
 		[Option("height", Required = false, HelpText = "Set the height to render to.")]
 		public int Height { get; set; }
 
+		[Option("scale", Required = false, HelpText = "Set the scale to render with.")]
+		public double Scale { get; set; }
+
 		[Option("characters", Required = false, HelpText = "Set the characters to use from dense -> light.")]
 		public string Characters { get; set; }
 

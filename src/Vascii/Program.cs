@@ -43,13 +43,24 @@ namespace Vascii {
 			}
 		}
 
+		public static void Prompt(Options options, string action, int millisecondsTimeout = 500) {
+			if (!options.SkipPrompt) {
+				Console.Write($"Press enter to {action} > ");
+				Console.Read();
+			} else {
+				Thread.Sleep(millisecondsTimeout);
+			}
+		}
+
 		static VasciiManager GetVasciiManager(Options options) {
 			int width = Console.WindowWidth - 2, height = Console.WindowHeight - 2;
+			double scale = 1;
 
 			if (options.Width != 0) width = options.Width;
 			if (options.Height != 0) height = options.Height;
+			if (options.Scale != 0) scale = options.Scale;
 
-			VasciiManager vasciiManager = new(width, height);
+			VasciiManager vasciiManager = new(width, height, scale);
 
 			if (options.Invert) vasciiManager.InvertColors();
 			if (!String.IsNullOrWhiteSpace(options.Characters)) vasciiManager.Characters = options.Characters;
@@ -66,11 +77,7 @@ namespace Vascii {
 			var vasciiManager = GetVasciiManager(options);
 			string image = vasciiManager.GenerateVasciiImage(options.File);
 
-			if (!options.SkipPrompt) {
-				Console.Write($"Press any key to display image > ");
-				Console.Read();
-			}
-
+			Prompt(options, "display image", 0);
 			Console.WriteLine(image);
 		}
 
@@ -78,10 +85,7 @@ namespace Vascii {
 			VasciiCamera camera = new(GetVasciiManager(options));
 			camera.TargetFps = options.Fps;
 
-			if (!options.SkipPrompt) {
-				Console.Write($"Press any key to start camera > ");
-				Console.Read();
-			}
+			Prompt(options, "start camera", 0);
 
 			Console.Clear();
 			camera.StartCapture(options.Camera, draw: frame => {
@@ -98,7 +102,6 @@ namespace Vascii {
 
 			Stopwatch stopwatch = new();
 
-			// Because we're writing white text on a black background
 			var manager = GetVasciiManager(options);
 			var video = manager.GenerateVasciiVideo(options.File);
 
@@ -108,7 +111,7 @@ namespace Vascii {
 
 			video.Finished += (_, _) => {
 				stopwatch.Stop();
-				Console.Clear(); 
+				Console.Clear();
 				Console.SetCursorPosition(Console.WindowTop, Console.WindowLeft);
 				Console.WriteLine($"Finished playing, took {stopwatch.Elapsed}");
 			};
@@ -120,10 +123,7 @@ namespace Vascii {
 				video.Fps = options.Fps;
 			}
 
-			if (!options.SkipPrompt) {
-				Console.Write($"Press any key to start playing > ");
-				Console.Read();
-			}
+			Prompt(options, "play video");
 
 			Console.Clear();
 			video.Play(cancellationToken: CancellationToken.None, draw: frame => {

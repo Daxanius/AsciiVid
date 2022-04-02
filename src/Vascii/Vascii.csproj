@@ -14,8 +14,4 @@
     <ProjectReference Include="..\VasciiLib\VasciiLib.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="call $(SolutionDir)build.bat $(OutDir)" />
-  </Target>
-
 </Project>

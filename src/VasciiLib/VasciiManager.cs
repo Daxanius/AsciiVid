@@ -9,13 +9,15 @@ namespace VasciiLib {
 	public class VasciiManager {
 		private Thread _renderThread;
 
-		public VasciiManager(int width, int height) {
+		public VasciiManager(int width, int height, double scale = 1) {
 			Width = width;
 			Height = height;
+			Scale = scale;
 		}
 
 		public int Width { get; private set; }
 		public int Height { get; private set; }
+		public double Scale { get; private set; }
 
 		public string Characters { get; set; } = "$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'. ";
 
@@ -42,7 +44,7 @@ namespace VasciiLib {
 						break;
 					}
 
-					Mat imageResized = image.Resize(new Size(Width, Height));
+					Mat imageResized = image.Resize(new Size(Width * Scale, Height * Scale));
 					video.Frames.Add(GenerateAscii(imageResized));
 				}
 
@@ -61,7 +63,8 @@ namespace VasciiLib {
 				throw new VasciiLibException("VasciiManager-GenerateVasciiImage(): file does not exist");
 			}
 
-			Mat image = new Mat(imageFile).Resize(new Size(Width, Height));
+			Mat image = new(imageFile);
+			image = image.Resize(new Size(image.Width * Scale, image.Height * Scale));
 			return GenerateAscii(image);
 		}
 
