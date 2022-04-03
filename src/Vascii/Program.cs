@@ -52,15 +52,12 @@ namespace Vascii {
 			}
 		}
 
-		static VasciiManager GetVasciiManager(Options options) {
-			int width = Console.WindowWidth - 2, height = Console.WindowHeight - 2;
-			double scale = 1;
+		static VasciiManager GetVasciiManager(Options options, int defaultWidth, int defaultHeight, double defaultScale = 1) {
+			if (options.Width != 0) defaultWidth = options.Width;
+			if (options.Height != 0) defaultHeight = options.Height;
+			if (options.Scale != 0) defaultScale = options.Scale;
 
-			if (options.Width != 0) width = options.Width;
-			if (options.Height != 0) height = options.Height;
-			if (options.Scale != 0) scale = options.Scale;
-
-			VasciiManager vasciiManager = new(width, height, scale);
+			VasciiManager vasciiManager = new(defaultWidth, defaultHeight, defaultScale);
 
 			if (options.Invert) vasciiManager.InvertColors();
 			if (!String.IsNullOrWhiteSpace(options.Characters)) vasciiManager.Characters = options.Characters;
@@ -74,7 +71,8 @@ namespace Vascii {
 				return;
 			}
 
-			var vasciiManager = GetVasciiManager(options);
+			(int width, int height) = VasciiManager.GetImageSize(options.File);
+			var vasciiManager = GetVasciiManager(options, width, height);
 			string image = vasciiManager.GenerateVasciiImage(options.File);
 
 			Prompt(options, "display image", 0);
@@ -82,7 +80,7 @@ namespace Vascii {
 		}
 
 		static void StartCamera(Options options) {
-			VasciiCamera camera = new(GetVasciiManager(options));
+			VasciiCamera camera = new(GetVasciiManager(options, Console.WindowWidth -2, Console.WindowHeight -2));
 			camera.TargetFps = options.Fps;
 
 			Prompt(options, "start camera", 0);
@@ -102,7 +100,7 @@ namespace Vascii {
 
 			Stopwatch stopwatch = new();
 
-			var manager = GetVasciiManager(options);
+			var manager = GetVasciiManager(options, Console.WindowWidth - 2, Console.WindowHeight - 2);
 			var video = manager.GenerateVasciiVideo(options.File);
 
 			video.Started += (_, _) => {

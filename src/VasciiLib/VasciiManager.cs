@@ -64,7 +64,7 @@ namespace VasciiLib {
 			}
 
 			Mat image = new(imageFile);
-			image = image.Resize(new Size(image.Width * Scale, image.Height * Scale));
+			image = image.Resize(new Size(Width * Scale, Height * Scale));
 			return GenerateAscii(image);
 		}
 
@@ -105,6 +105,18 @@ namespace VasciiLib {
 			char[] array = Characters.ToCharArray();
 			Array.Reverse(array);
 			Characters = new string(array);
+		}
+
+		///<summary>
+		///<para>Gets the size of an image</para>
+		///</summary>
+		public static (int, int) GetImageSize(string imageFile) {
+			if (!File.Exists(imageFile)) {
+				throw new VasciiLibException("VasciiManager-GenerateVasciiImage(): file does not exist");
+			}
+
+			Mat image = new(imageFile);
+			return (image.Width, image.Height);
 		}
 	}
 }
